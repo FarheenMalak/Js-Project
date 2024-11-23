@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Travel Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #e6e8ec, #f0f0f3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    header {
+      background-color: #258fd6;
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      position: relative;
+    }
+
+    header img {
+  width: 120px;
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  transform: translateY(-50%);
+  max-width: 100%;
+  height: auto;
+}
+
+    main {
+      padding: 2rem 1.5rem;
+    }
+
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    #destination-input {
+      width: 100%;
+      max-width: 600px;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #add-button {
+      padding: 0.8rem 1.5rem;
+      background-color: #258fd6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #add-button:hover {
+      background-color: #0f649c;
+    }
+
+    #map-container {
+      margin-bottom: 2rem;
+      width: 100%;
+      height: 400px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .fun-fact-container {
+      background-color: #f9f9ff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid #258fd6;
+    }
+
+    .fun-fact-container h3 {
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align header content */
+  }
+
+  header img {
+    width: 30%; /* Make the image smaller on mobile */
+    height: 30%;;
+    position: relative;
+    top: 0; /* Remove the absolute positioning */
+    right: 0; /* Reset any right positioning */
+    transform: none; /* Remove the translation */
+  }
+
+  #destination-input {
+    width: 100%;
+  }
+
+  #add-button {
+    width: 100%;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      Interactive Travel Tracker
+      <img src="image.gif" alt="Travel Icon">
+    </header>
+
+    <main>
+      <div class="input-container">
+        <input type="text" id="destination-input" placeholder="Enter a destination (e.g., Eiffel Tower)">
+        <button id="add-button">View 3D/Street View</button>
+      </div>
+      <div id="map-container">
+        <iframe id="map-iframe" src="https://www.google.com/maps/embed" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+      <div class="fun-fact-container">
+        <h3>Fun Fact:</h3>
+        <p id="fun-fact">Select a location to view a fun fact!</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
+
+  <script>
+    // Predefined locations and their Google Maps URLs with fun facts (Including Pakistan locations)
+    const locationData = {
+      "Eiffel Tower": {
+        url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.9982368337327!2d2.293462315674171!3d48.85884477928739!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66efc5068fa5b%3A0x260c0b7e2b0ef31e!2sEiffel%20Tower!5e0!3m2!1sen!2s!4v1683739366334!5m2!1sen!2s",
+        funFact: "The Eiffel Tower can be 15 cm taller during summer due to heat expansion."
+      },
+      "Burj Khalifa": {
+        url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3608.7795561167357!2d55.27218731501367!3d25.197197983897875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f4331e6a11af5%3A0x84b8bfbf1e2e7e0e!2sBurj%20Khalifa!5e0!3m2!1sen!2s!4v1683739372305!5m2!1sen!2s",
+        funFact: "Burj Khalifa is the tallest building in the world."
+      },
+      "Lahore Fort": {
+        url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.746664825022!2d74.3124374483707!3d31.582044549347308!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391909ff22b0c945%3A0x4cf33f0458f54f5f!2sLahore%20Fort!5e0!3m2!1sen!2s!4v1683740045875!5m2!1sen!2s",
+        funFact: "Lahore Fort is a UNESCO World Heritage site and was built during the reign of Emperor Akbar."
+      },
+      "Badshahi Mosque": {
+        url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.8662612745757!2d74.358614185602!3d31.582315823522437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391909fc6de4237b%3A0x7e7e7d4a96b9d0b9!2sBadshahi%20Mosque!5e0!3m2!1sen!2s!4v1683740068520!5m2!1sen!2s",
+        funFact: "The Badshahi Mosque in Lahore was the largest mosque in the world when it was completed in 1673."
+      },
+      "Minar-e-Pakistan": {
+        url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.734146114907!2d74.31441808435827!3d31.582013205437854!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391909ff4aab09fb%3A0x3b98b19c63291f66!2sMinar-e-Pakistan!5e0!3m2!1sen!2s!4v1683740081994!5m2!1sen!2s",
+        funFact: "Minar-e-Pakistan marks the place where the Pakistan Resolution was passed in 1940."
+      },
+      "Fairy Meadows": {
+        url: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0368287591155!2d73.24980113158138!3d35.31750709867832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391968263e84a307%3A0x69c22c8f5efb2f9c!2sFairy%20Meadows!5e0!3m2!1sen!2s!4v1683740093736!5m2!1sen!2s",
+        funFact: "Fairy Meadows is a beautiful plateau near Nanga Parbat and offers breathtaking views."
+      }
+    };
+
+    // DOM Elements
+    const destinationInput = document.getElementById("destination-input");
+    const addButton = document.getElementById("add-button");
+    const mapIframe = document.getElementById("map-iframe");
+    const funFactDisplay = document.getElementById("fun-fact");
+    const virtualVisitBtn = document.getElementById("virtual-visit-btn");
+
+    // Event Listener for Adding Locations
+    addButton.addEventListener("click", () => {
+      const destination = destinationInput.value.trim();
+      if (locationData[destination]) {
+        mapIframe.src = locationData[destination].url; // Update iframe URL
+        funFactDisplay.textContent = locationData[destination].funFact; // Display fun fact
+      } else {
+        alert("Destination not found! Try famous locations like 'Eiffel Tower', 'Burj Khalifa', 'Lahore Fort', 'Badshahi Mosque', 'Minar-e-Pakistan', or 'Fairy Meadows'.");
+      }
+    });
+
+    // Virtual Visit Button Functionality (Simulate Virtual Tour)
+    virtualVisitBtn.addEventListener("click", () => {
+      alert("Starting your virtual tour... Explore the 3D view and enjoy the location!");
+    });
+  </script>
+</body>
+</html>
